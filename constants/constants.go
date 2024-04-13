@@ -21,7 +21,6 @@ var (
 	AllPermissions []models.Permission = []models.Permission{ViewAnalytics, ManageOrders, ManageMenu, ManageCoupons, ManageUsers}
 )
 var (
-	PasswordSalt string
 	RabbitMQURL string
 )
 
@@ -38,9 +37,6 @@ func init() {
 	if err != nil{
 		panic(err)
 	}
-	
-	salt := os.Getenv("DefaultPasswordSalt")
-	PasswordSalt = salt
 	RabbitMQURL = os.Getenv("RabbitMQURL")
 	TotalEmailConsumers,err = strconv.Atoi(os.Getenv("TotalEmailConsumers"))
 	if err != nil {
@@ -50,5 +46,5 @@ func init() {
 	if err != nil {
 		log.Println("Could not parse TotalNotificationConsumers, using default value")
 	}
-	
+
 }
