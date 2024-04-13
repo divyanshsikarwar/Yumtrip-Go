@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"yumtrip/core"
 	"yumtrip/models"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Menu struct{}
+//TODO : Add Redis Cache for List Apis
 
 func (m *Menu) UpdateCreateMenu(w http.ResponseWriter, r *http.Request) {
 	var menu models.Menu

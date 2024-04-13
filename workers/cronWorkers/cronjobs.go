@@ -3,6 +3,7 @@ package cronworkers
 import (
 	"log"
 	"yumtrip/core"
+	"yumtrip/models"
 
 	"github.com/robfig/cron"
 )
@@ -15,6 +16,9 @@ func Init() {
 	c := cron.New()
 	CronVar = c
 	c.AddFunc("0 * * * *", UpdateOrderStatus) //Runs Every Hour
+	c.AddFunc("0 0 * * *", ExpireSessions) //Runs Every Day
+	c.AddFunc("0 0 * * 0", DeleteExpiredSession)//Every week
+	c.Start()
 }
 
 func UpdateOrderStatus() {
@@ -29,5 +33,34 @@ func UpdateOrderStatus() {
 		if err != nil {
 			log.Println("Error updating order", err)
 		}
+	}
+}
+
+func ExpireSessions() {
+	toBeExpiredSessions, err := core.GetNewExpiredSessions()
+	if err != nil {
+		log.Println("Error getting expired sessions", err)
+		return
+	}
+	var updatedSessions []models.Session
+	for _, session := range toBeExpiredSessions {
+		session.Expired = true
+		updatedSessions = append(updatedSessions, session)
+	}
+	err = core.BulkUpdateSessions(updatedSessions)
+	if err != nil {
+		log.Println("Error updating sessions", err)
+	}	
+}
+
+func DeleteExpiredSession() {
+	toBeDeletedSessions, err := core.GetOldExpiredSessions()
+	if err != nil {
+		log.Println("Error getting expired sessions", err)
+		return
+	}	
+	err = core.BulkDeleteSessions(toBeDeletedSessions)
+	if err != nil {
+		log.Println("Error deleting sessions", err)
 	}
 }

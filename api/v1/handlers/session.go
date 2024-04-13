@@ -3,12 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"yumtrip/core"
 	"yumtrip/api/v1/models"
+	"yumtrip/core"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//To be depricated, moved to Oauth2.0
 type Session struct{}
 
 func (s *Session) ValidateSession(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +20,7 @@ func (s *Session) ValidateSession(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	valid, err := core.ValidateSession(sessionId)
+	valid, userid, err := core.ValidateSession(sessionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -30,7 +31,7 @@ func (s *Session) ValidateSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Update exisiting session
-	err = core.CreateUpdateSession(sessionId)
+	err = core.CreateUpdateSession(sessionId, userid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -47,7 +48,7 @@ func (s *Session) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, sessionId, err := creds.Validate()
+	valid, sessionId, userId, err := creds.Validate()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -57,7 +58,7 @@ func (s *Session) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = core.CreateUpdateSession(sessionId)
+	err = core.CreateUpdateSession(sessionId, userId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -73,7 +74,7 @@ func (s *Session) Logout(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	valid, err := core.ValidateSession(sessionId)
+	valid, _, err := core.ValidateSession(sessionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
