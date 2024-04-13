@@ -5,6 +5,7 @@ import (
 	"net/http"
 	apiv1 "yumtrip/api/v1"
 	cronworkers "yumtrip/workers/cronWorkers"
+	rabbitconsumers "yumtrip/workers/rabbitConsumers"
 
 	"github.com/gorilla/mux"
 )
@@ -17,6 +18,7 @@ func main(){
 	log.Println("Server is starting...")
 
 	cronworkers.Init()
+	rabbitconsumers.Init()
 
 	// Start the server
 	err := http.ListenAndServe(":8080", router)

@@ -15,10 +15,15 @@ func IsValidEmail(email string) bool {
 
 //Generate hash of the password
 func GetPasswordHash(password string) (string, error) {
-	//Hash the password with the salt and return the hash
+	//Hash the password with the random salt and return the hash
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 	return string(hash), err
+}
+
+func CheckPassword(password, hashedPassword string) bool {
+    err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+    return err == nil
 }
