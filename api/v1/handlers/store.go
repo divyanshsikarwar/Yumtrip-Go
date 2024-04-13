@@ -21,7 +21,7 @@ func (s *Store) CreateStore(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Create the store
-	err = store.Create()
+	err = store.Create(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -73,7 +73,7 @@ func (s *Store) UpdateStore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = store.Update()
+	err = store.Update(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -90,7 +90,7 @@ func (s *Store) DeleteStore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = store.Delete()
+	err = store.Delete(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

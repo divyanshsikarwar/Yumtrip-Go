@@ -20,7 +20,7 @@ func (s *Session) ValidateSession(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	valid, userid, err := core.ValidateSession(sessionId)
+	valid, userid, err := core.ValidateSession(r.Context(), sessionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -31,7 +31,7 @@ func (s *Session) ValidateSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Update exisiting session
-	err = core.CreateUpdateSession(sessionId, userid)
+	err = core.CreateUpdateSession(r.Context() , sessionId ,userid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -48,7 +48,7 @@ func (s *Session) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	valid, sessionId, userId, err := creds.Validate()
+	valid, sessionId, userId, err := creds.Validate(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -58,7 +58,7 @@ func (s *Session) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = core.CreateUpdateSession(sessionId, userId)
+	err = core.CreateUpdateSession(r.Context(), sessionId, userId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,13 +74,13 @@ func (s *Session) Logout(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	valid, _, err := core.ValidateSession(sessionId)
+	valid, _, err := core.ValidateSession(r.Context(),sessionId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	if valid {
-		err = core.InValidateSession(sessionId)
+		err = core.InValidateSession(r.Context(), sessionId)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

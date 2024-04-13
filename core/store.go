@@ -15,7 +15,7 @@ func GetStores(context context.Context, skip, limit int) ([]models.Store, error)
 		"limit":  limit,
 	}
 
-	stores, err := models.GetStoresByQuery(query)
+	stores, err := models.GetStoresByQuery(context ,query)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func GetStore(context context.Context, id string) (models.Store, error) {
 	query := bson.M{
 		"_id":     id,
 	}
-	stores, err := models.GetStoresByQuery(query)
+	stores, err := models.GetStoresByQuery(context ,query)
 	if err != nil {
 		return models.Store{}, err
 	}

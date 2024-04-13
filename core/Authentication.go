@@ -20,7 +20,7 @@ func SendEmailOtp(context context.Context, email string) error {
 	}
 	Authentication.Code = randomCode
 	Authentication.Time = time.Now()
-	err = Authentication.Create()
+	err = Authentication.Create(context)
 	if err != nil {
 		return err
 	}
@@ -34,10 +34,10 @@ func SendEmailOtp(context context.Context, email string) error {
 func VerifyEmailOtp(context context.Context, otp,email string) bool {
 	query := bson.M{"email": email, "code": otp}
 
-	auth, err := models.GetAuthenticationDocByQuery(query)
+	auth, err := models.GetAuthenticationDocByQuery(context, query)
 	if err != nil {
 		return false
 	}
-	auth.Delete()
+	auth.Delete(context)
 	return true
 }

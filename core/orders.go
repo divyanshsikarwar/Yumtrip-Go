@@ -9,14 +9,14 @@ import (
 
 
 func GetOrders(context context.Context, skip, limit int) ([]models.Order, error) {
-	orders,err := models.GetOrders()
+	orders,err := models.GetOrders(context)
 	if err != nil {
 		return nil, err
 	}
 	return orders, nil
 }
 
-func GetNewInactiveOrders() ([]models.Order, error) {
+func GetNewInactiveOrders(context context.Context) ([]models.Order, error) {
 	//Write mongo query to get all orders that are 3hrs old, active and in pending or delivered stage
 	query := bson.M{
 		"status": bson.M{
@@ -26,7 +26,7 @@ func GetNewInactiveOrders() ([]models.Order, error) {
 			"$lt": time.Now().Add(-3 * time.Hour),
 		},
 	}
-	orders, err := models.GetOrdersByQuery(query)
+	orders, err := models.GetOrdersByQuery(context, query)
 	return orders, err
 
 }

@@ -1,6 +1,7 @@
 package cronworkers
 
 import (
+	"context"
 	"log"
 	"yumtrip/core"
 	"yumtrip/models"
@@ -22,14 +23,14 @@ func Init() {
 }
 
 func UpdateOrderStatus() {
-	orders, err := core.GetNewInactiveOrders()
+	orders, err := core.GetNewInactiveOrders(context.Background())
 	if err != nil {
 		log.Println("Error getting orders by status", err)
 		return
 	}
 	for _, order := range orders {
 		order.Status = "inactive"
-		err = order.UpdateOrder()
+		err = order.UpdateOrder(context.Background())
 		if err != nil {
 			log.Println("Error updating order", err)
 		}
@@ -37,7 +38,7 @@ func UpdateOrderStatus() {
 }
 
 func ExpireSessions() {
-	toBeExpiredSessions, err := core.GetNewExpiredSessions()
+	toBeExpiredSessions, err := core.GetNewExpiredSessions(context.Background())
 	if err != nil {
 		log.Println("Error getting expired sessions", err)
 		return
@@ -47,19 +48,19 @@ func ExpireSessions() {
 		session.Expired = true
 		updatedSessions = append(updatedSessions, session)
 	}
-	err = core.BulkUpdateSessions(updatedSessions)
+	err = core.BulkUpdateSessions(context.Background(), updatedSessions)
 	if err != nil {
 		log.Println("Error updating sessions", err)
 	}	
 }
 
 func DeleteExpiredSession() {
-	toBeDeletedSessions, err := core.GetOldExpiredSessions()
+	toBeDeletedSessions, err := core.GetOldExpiredSessions(context.Background())
 	if err != nil {
 		log.Println("Error getting expired sessions", err)
 		return
 	}	
-	err = core.BulkDeleteSessions(toBeDeletedSessions)
+	err = core.BulkDeleteSessions(context.Background(), toBeDeletedSessions)
 	if err != nil {
 		log.Println("Error deleting sessions", err)
 	}

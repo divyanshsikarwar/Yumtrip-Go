@@ -20,7 +20,7 @@ func (c *Coupon) CreateCoupon(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Create the coupon
-	err = coupon.Create()
+	err = coupon.Create(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

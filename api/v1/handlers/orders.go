@@ -46,7 +46,7 @@ func (o *Order) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Create the order
-	err = order.CreateOrder()
+	err = order.CreateOrder(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

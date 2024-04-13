@@ -22,7 +22,7 @@ func (rl *Role) CreateRole(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Create the role
-	err = core.CreateRole(role)
+	err = core.CreateRole(r.Context(),role)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

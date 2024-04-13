@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"yumtrip/core"
 	"yumtrip/utils"
 
@@ -12,10 +13,10 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func (c *Credentials) Validate() (bool, primitive.ObjectID, primitive.ObjectID, error) {
+func (c *Credentials) Validate(context context.Context) (bool, primitive.ObjectID, primitive.ObjectID, error) {
 	email := c.Email
 	password := c.Password
-	user, err := core.GetUserByEmail(email)
+	user, err := core.GetUserByEmail(context, email)
 	if err != nil {
 		return false, primitive.NilObjectID,primitive.NilObjectID, err
 	}
@@ -23,13 +24,13 @@ func (c *Credentials) Validate() (bool, primitive.ObjectID, primitive.ObjectID, 
 		return false, primitive.NilObjectID,primitive.NilObjectID, nil
 	}
 	userId := user.ID
-	originalPassword, err := core.GetPasswordHashByUserId(userId)
+	originalPassword, err := core.GetPasswordHashByUserId( context,userId)
 	if err != nil {
 		return false, primitive.NilObjectID,primitive.NilObjectID, err
 	}
 	isPasswordCorrect := utils.CheckPassword(password, originalPassword)
 	if isPasswordCorrect {
-		sessionId := core.GetSessionIdByUserId(userId)
+		sessionId := core.GetSessionIdByUserId(context,userId)
 		return true, sessionId, user.ID, nil
 	}
 	return false, primitive.NilObjectID,primitive.NilObjectID, nil

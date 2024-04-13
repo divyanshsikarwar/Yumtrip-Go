@@ -28,7 +28,7 @@ func (u *User) CreateUser(w http.ResponseWriter, r *http.Request) {
 	password := userAndCreds.password
 
 	//Create the user
-	err = core.CreateUserAndCredentials(user, password)
+	err = core.CreateUserAndCredentials(r.Context(),user, password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -48,7 +48,7 @@ func (u *User) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Update the user
-	err = user.Update()
+	err = user.Update(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

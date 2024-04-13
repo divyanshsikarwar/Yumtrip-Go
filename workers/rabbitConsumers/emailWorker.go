@@ -2,6 +2,7 @@ package rabbitconsumers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"yumtrip/constants"
 
@@ -42,7 +43,7 @@ func EmailConsumer() {
 	go func() {
 		for d := range msgs {
 			//Send Email
-			print(d)
+			fmt.Println(d.Body)
 		}
 	}()
 

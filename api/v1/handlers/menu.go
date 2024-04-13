@@ -20,7 +20,7 @@ func (m *Menu) UpdateCreateMenu(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = models.UpsertMenu(menu)
+	err = models.UpsertMenu(r.Context(),menu)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

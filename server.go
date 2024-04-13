@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	apiv1 "yumtrip/api/v1"
+	"yumtrip/database"
 	cronworkers "yumtrip/workers/cronWorkers"
 	rabbitconsumers "yumtrip/workers/rabbitConsumers"
 
@@ -19,6 +20,7 @@ func main(){
 
 	cronworkers.Init()
 	rabbitconsumers.Init()
+	database.InitMongoDB()
 
 	// Start the server
 	err := http.ListenAndServe(":8080", router)

@@ -11,14 +11,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func CreateRole (role models.Role) error {
+func CreateRole (context context.Context, role models.Role) error {
 	for _, permission := range role.Permissions {
-		if !slices.Contains(constants.AllPermissions, permission) {
+		if !slices.Contains(constants.AllPermissions, string(permission)) {
 			return errors.New("Invalid permission : "+ string(permission))
 		}
 	}
 
-	err := role.Create()
+	err := role.Create(context)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func GetRoles(context context.Context, skip, limit int) ([]models.Role, error) {
 		"limit": limit,
 	}
 
-	roles, err := models.GetRolesByQuery(query)
+	roles, err := models.GetRolesByQuery(context ,query)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func GetRole(context context.Context, id primitive.ObjectID) (models.Role, error
 	query := bson.M{
 		"_id": id,
 	}
-	roles, err := models.GetRolesByQuery(query)
+	roles, err := models.GetRolesByQuery(context ,query)
 	if err != nil {
 		return models.Role{}, err
 	}
